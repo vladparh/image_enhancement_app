@@ -1,0 +1,43 @@
+real_esrgan_x2:
+  scale: 2
+  weights_path: "real_esrgan/weights/RealESRGAN_x2plus.pth"
+  params:
+    {
+      num_in_ch: 3,
+      num_out_ch: 3,
+      num_feat: 64,
+      num_block: 23,
+      num_grow_ch: 32,
+      scale: 2,
+    }
+
+real_esrgan_x4:
+  scale: 4
+  weights_path: "real_esrgan/weights/RealESRGAN_x4plus.pth"
+  params:
+    {
+      num_in_ch: 3,
+      num_out_ch: 3,
+      num_feat: 64,
+      num_block: 23,
+      num_grow_ch: 32,
+      scale: 4,
+    }
+
+
+nafnet_sidd:
+  scale: 1
+  weights_path: "nafnet/weights/NAFNet-SIDD-width32.pth"
+  params:
+    {
+      width: 32,
+      enc_blk_nums: [2, 2, 4, 8],
+      middle_blk_num: 12,
+      dec_blk_nums: [2, 2, 2, 2],
+    }
+
+
+mlwnet:
+  scale: 1
+  weights_path: "mlwnet/weights/realblur_j-width32.pth"
+  params: { dim: 32 }

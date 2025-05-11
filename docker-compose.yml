@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  fastapp:
+    build: .
+    ports:
+      - "8000:8000"
+  stapp:
+    build: src/services/streamlit
+    ports:
+      - "8501:8501"
+    depends_on:
+      - fastapp
