@@ -24,7 +24,6 @@ real_esrgan_x4:
       scale: 4,
     }
 
-
 nafnet_sidd:
   scale: 1
   weights_path: "nafnet/weights/NAFNet-SIDD-width32.pth"
@@ -35,7 +34,6 @@ nafnet_sidd:
       middle_blk_num: 12,
       dec_blk_nums: [2, 2, 2, 2],
     }
-
 
 mlwnet:
   scale: 1

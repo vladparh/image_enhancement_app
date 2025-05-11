@@ -87,7 +87,7 @@ class Enhancer:
                 )["params"]
             )
         else:
-            raise ValueError('Model not found')
+            raise ValueError("Model not found")
 
         self.model = self.model.to(self.device)
         self.model.eval()
@@ -201,9 +201,7 @@ class Enhancer:
         height, width = tile.shape[2:]
         pad_height = (self.window_size - (height % self.window_size)) % self.window_size
         pad_width = (self.window_size - (width % self.window_size)) % self.window_size
-        return F.pad(
-                tile, (0, pad_width, 0, pad_height), "reflect"
-            )
+        return F.pad(tile, (0, pad_width, 0, pad_height), "reflect")
 
     def post_process(self):
         # remove extra pad

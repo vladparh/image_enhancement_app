@@ -1,14 +1,12 @@
-import streamlit as st
-from PIL import Image
-from streamlit_image_comparison import image_comparison
-
 import io
 import logging
 
 import requests
+import streamlit as st
+from PIL import Image
+from streamlit_image_comparison import image_comparison
 
-
-site = 'http://fastapp:8000'
+site = "http://fastapp:8000"
 
 
 @st.cache_data(show_spinner=False, max_entries=10)

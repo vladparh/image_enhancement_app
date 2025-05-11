@@ -8,12 +8,12 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from ptflops import get_model_complexity_info
 from torchinfo import summary
 
 from src.models.mlwnet.wavelet_block import LWN
 from src.models.nafnet.local_arch import Local_Base
 from src.models.nafnet.NAFNet_arch import LayerNorm2d
-from ptflops import get_model_complexity_info
 
 
 class WaveletBlock(nn.Module):
@@ -459,6 +459,12 @@ if __name__ == "__main__":
     model = MLWNet_Local(dim=32)
     summary(model, input_size=(1, 3, 64, 64))
     with torch.cuda.device(0):
-        macs, _ = get_model_complexity_info(model, (3, 64, 64), as_strings=True, backend='pytorch',
-        print_per_layer_stat = False, verbose = False)
-        print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
+        macs, _ = get_model_complexity_info(
+            model,
+            (3, 64, 64),
+            as_strings=True,
+            backend="pytorch",
+            print_per_layer_stat=False,
+            verbose=False,
+        )
+        print("{:<30}  {:<8}".format("Computational complexity: ", macs))
