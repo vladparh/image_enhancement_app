@@ -10,8 +10,8 @@ from torchvision.transforms import ToTensor
 from torchvision.transforms.functional import to_pil_image
 
 from src.models.mlwnet.MLWNet_arch import MLWNet_Local
-from src.models.nafnet.NAFNet_arch import NAFNetLocal
 from src.models.real_esrgan.generator import RRDBNet
+from src.models.scunet.model import SCUNet
 
 
 class Enhancer:
@@ -29,9 +29,9 @@ class Enhancer:
     def __init__(
         self,
         model_name: str,
-        tile_size: int = 400,
-        tile_pad: int = 10,
-        pre_pad: int = 10,
+        tile_size: int = None,
+        tile_pad: int = None,
+        pre_pad: int = None,
         device: str = None,
     ):
         self.model_name = model_name
@@ -68,15 +68,6 @@ class Enhancer:
                     weights_only=True,
                 )["params_ema"]
             )
-        elif self.model_name == "nafnet_sidd":
-            self.scale = config[self.model_name]["scale"]
-            self.model = NAFNetLocal(**config[self.model_name]["params"])
-            self.model.load_state_dict(
-                torch.load(
-                    os.path.join(base_path, config[self.model_name]["weights_path"]),
-                    weights_only=True,
-                )["params"]
-            )
         elif self.model_name == "mlwnet":
             self.scale = config[self.model_name]["scale"]
             self.model = MLWNet_Local(**config[self.model_name]["params"])
@@ -86,8 +77,28 @@ class Enhancer:
                     weights_only=True,
                 )["params"]
             )
+        elif self.model_name == "scunet":
+            self.scale = config[self.model_name]["scale"]
+            params = config[self.model_name]["params"]
+            self.model = SCUNet(**params)
+            self.model.load_state_dict(
+                torch.load(
+                    os.path.join(base_path, config[self.model_name]["weights_path"]),
+                    weights_only=True,
+                ),
+                strict=True,
+            )
         else:
             raise ValueError("Model not found")
+
+        if self.tile_size is None:
+            self.tile_size = config[self.model_name]["tile_size"]
+
+        if self.tile_pad is None:
+            self.tile_pad = config[self.model_name]["tile_pad"]
+
+        if self.pre_pad is None:
+            self.pre_pad = config[self.model_name]["pre_pad"]
 
         self.model = self.model.to(self.device)
         self.model.eval()
@@ -118,7 +129,8 @@ class Enhancer:
 
     def process(self):
         # model inference
-        self.output = self.model(self.img.to(self.device)).cpu()
+        with torch.autocast(device_type=self.device.type, dtype=torch.bfloat16):
+            self.output = self.model(self.img.to(self.device)).cpu()
 
     def tile_process(self):
         """It will first crop input images to tiles, and then process each tile.
@@ -167,7 +179,9 @@ class Enhancer:
 
                 # upscale tile
                 try:
-                    with torch.no_grad():
+                    with torch.autocast(
+                        device_type=self.device.type, dtype=torch.bfloat16
+                    ):
                         if self.swin:
                             input_tile = self.pad_tile(input_tile)
                         output_tile = self.model(input_tile.to(self.device)).cpu()

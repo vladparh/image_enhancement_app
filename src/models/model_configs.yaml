@@ -1,5 +1,8 @@
 real_esrgan_x2:
   scale: 2
+  tile_size: 1000
+  tile_pad: 100
+  pre_pad: 10
   weights_path: "real_esrgan/weights/RealESRGAN_x2plus.pth"
   params:
     {
@@ -13,6 +16,9 @@ real_esrgan_x2:
 
 real_esrgan_x4:
   scale: 4
+  tile_size: 500
+  tile_pad: 50
+  pre_pad: 10
   weights_path: "real_esrgan/weights/RealESRGAN_x4plus.pth"
   params:
     {
@@ -24,18 +30,18 @@ real_esrgan_x4:
       scale: 4,
     }
 
-nafnet_sidd:
-  scale: 1
-  weights_path: "nafnet/weights/NAFNet-SIDD-width32.pth"
-  params:
-    {
-      width: 32,
-      enc_blk_nums: [2, 2, 4, 8],
-      middle_blk_num: 12,
-      dec_blk_nums: [2, 2, 2, 2],
-    }
-
 mlwnet:
   scale: 1
+  tile_size: 800
+  tile_pad: 200
+  pre_pad: 10
   weights_path: "mlwnet/weights/realblur_j-width32.pth"
   params: { dim: 32 }
+
+scunet:
+  scale: 1
+  tile_size: 1000
+  tile_pad: 100
+  pre_pad: 10
+  weights_path: "scunet/weights/scunet_color_real_gan.pth"
+  params: { in_nc: 3, config: [4, 4, 4, 4, 4, 4, 4], dim: 64 }

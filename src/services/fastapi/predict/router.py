@@ -28,10 +28,10 @@ async def upscale(scale: int = 2, image: UploadFile = None) -> Response:
         raise HTTPException(status_code=400, detail="Something wrong with file")
 
     if scale == 2:
-        enhancer = Enhancer(model_name="real_esrgan_x2", tile_size=1000)
+        enhancer = Enhancer(model_name="real_esrgan_x2")
         logging.info("Upscale x2")
     elif scale == 4:
-        enhancer = Enhancer(model_name="real_esrgan_x4", tile_size=500)
+        enhancer = Enhancer(model_name="real_esrgan_x4")
         logging.info("Upscale x4")
     else:
         raise HTTPException(status_code=400, detail="Invalid scale")
@@ -66,7 +66,7 @@ async def deblur(image: UploadFile = None) -> Response:
 
     try:
         logging.info("Deblur image")
-        enhancer = Enhancer(model_name="mlwnet", tile_size=1000)
+        enhancer = Enhancer(model_name="mlwnet")
         img = enhancer.enhance(img)
     except Exception:
         logging.error("Image deblur error", exc_info=True)
@@ -96,7 +96,7 @@ async def denoise(image: UploadFile = None) -> Response:
 
     try:
         logging.info("Denoise image")
-        enhancer = Enhancer(model_name="nafnet_sidd", tile_size=1000)
+        enhancer = Enhancer(model_name="scunet")
         img = enhancer.enhance(img)
     except Exception:
         logging.error("Image denoise error", exc_info=True)

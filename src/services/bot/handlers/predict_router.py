@@ -109,7 +109,7 @@ async def x2_upscale(message: Message, state: FSMContext, bot: Bot):
     try:
         logging.info("Upscaling x2")
         img = Image.open(file)
-        enhancer = Enhancer(model_name="real_esrgan_x2", tile_size=1000)
+        enhancer = Enhancer(model_name="real_esrgan_x2")
         img = enhancer.enhance(img)
         img_bytes = io.BytesIO()
         img.save(img_bytes, format="png")
@@ -136,7 +136,7 @@ async def x4_upscale(message: Message, state: FSMContext, bot: Bot):
     try:
         logging.info("Upscaling x4")
         img = Image.open(file)
-        enhancer = Enhancer(model_name="real_esrgan_x4", tile_size=500)
+        enhancer = Enhancer(model_name="real_esrgan_x4")
         img = enhancer.enhance(img)
         img_bytes = io.BytesIO()
         img.save(img_bytes, format="png")
@@ -163,7 +163,7 @@ async def deblur(message: Message, state: FSMContext, bot: Bot):
     try:
         logging.info("Deblurring")
         img = Image.open(file)
-        enhancer = Enhancer(model_name="mlwnet", tile_size=1000)
+        enhancer = Enhancer(model_name="mlwnet")
         img = enhancer.enhance(img)
         img_bytes = io.BytesIO()
         img.save(img_bytes, format="png")
@@ -190,7 +190,7 @@ async def denoise(message: Message, state: FSMContext, bot: Bot):
     try:
         logging.info("Denoising")
         img = Image.open(file)
-        enhancer = Enhancer(model_name="nafnet_sidd", tile_size=1000)
+        enhancer = Enhancer(model_name="scunet")
         img = enhancer.enhance(img)
         img_bytes = io.BytesIO()
         img.save(img_bytes, format="png")
