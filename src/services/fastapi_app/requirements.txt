@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+aiogram
+pydantic-settings
+redis
+pika
+httpx
+pillow
+python-multipart

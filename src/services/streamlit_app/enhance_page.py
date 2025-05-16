@@ -1,5 +1,6 @@
 import io
 import logging
+from time import sleep
 
 import requests
 import streamlit as st
@@ -17,6 +18,16 @@ def upscale(img, scale_value):
         files={"image": img.getvalue()},
         params={"scale": scale_value},
     )
+    if response.status_code != 200:
+        return response.status_code, ""
+    inference_id = response.json()["inference_id"]
+    while True:
+        response = requests.request(
+            "GET", f"{site}/enhance/result", params={"inference_id": inference_id}
+        )
+        if response.status_code == 200 or response.status_code == 500:
+            break
+        sleep(1)
     return response.status_code, response.content
 
 
@@ -25,6 +36,16 @@ def deblur(img):
     response = requests.request(
         "POST", f"{site}/enhance/deblur", files={"image": img.getvalue()}
     )
+    if response.status_code != 200:
+        return response.status_code, ""
+    inference_id = response.json()["inference_id"]
+    while True:
+        response = requests.request(
+            "GET", f"{site}/enhance/result", params={"inference_id": inference_id}
+        )
+        if response.status_code == 200 or response.status_code == 500:
+            break
+        sleep(1)
     return response.status_code, response.content
 
 
@@ -33,6 +54,16 @@ def denoise(img):
     response = requests.request(
         "POST", f"{site}/enhance/denoise", files={"image": img.getvalue()}
     )
+    if response.status_code != 200:
+        return response.status_code, ""
+    inference_id = response.json()["inference_id"]
+    while True:
+        response = requests.request(
+            "GET", f"{site}/enhance/result", params={"inference_id": inference_id}
+        )
+        if response.status_code == 200 or response.status_code == 500:
+            break
+        sleep(1)
     return response.status_code, response.content
 
 

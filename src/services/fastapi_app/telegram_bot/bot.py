@@ -2,8 +2,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from src.services.bot.config_reader import settings
-from src.services.bot.handlers.predict_router import router as predict_router
+from .config_reader import settings
+from .handlers.predict_router import router as predict_router
 
 bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
 dp = Dispatcher()

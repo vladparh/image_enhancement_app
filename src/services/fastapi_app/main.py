@@ -1,14 +1,17 @@
-# python -m src.services.fastapi.main
+# python -m src.services.fastapi_app.main
 import logging
+import os
 from contextlib import asynccontextmanager
 
 import uvicorn
 from aiogram.types import Update
 from fastapi import FastAPI, Request
+from predict.router import router as predict_router
+from telegram_bot.bot import bot, dp
+from telegram_bot.config_reader import settings
 
-from src.services.bot.bot import bot, dp
-from src.services.bot.config_reader import settings
-from src.services.fastapi.predict.router import router as predict_router
+pythonpath = os.environ.get("PYTHONPATH", "").split(os.pathsep)
+print(pythonpath)
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -47,4 +50,4 @@ async def webhook(request: Request) -> None:
 
 
 if __name__ == "__main__":
-    uvicorn.run(app="src.services.fastapi.main:app", reload=True, port=8000)
+    uvicorn.run(app="src.services.fastapi_app.main:app", reload=True, port=8000)

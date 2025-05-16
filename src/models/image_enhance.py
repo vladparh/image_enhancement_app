@@ -42,6 +42,7 @@ class Enhancer:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         else:
             self.device = torch.device(device)
+        logging.info(f"Using {self.device.type}")
         self.scale = None
         self.mod_scale = None
         self.model = None
@@ -50,6 +51,7 @@ class Enhancer:
     def load_model(self):
         base_path = os.path.dirname(os.path.abspath(__file__))
         config = Config("model_configs.yaml")
+        logging.info(self.model_name)
         if self.model_name == "real_esrgan_x2":
             self.scale = config[self.model_name]["scale"]
             self.model = RRDBNet(**config[self.model_name]["params"])
