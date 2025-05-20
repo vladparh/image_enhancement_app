@@ -12,6 +12,7 @@ from aiogram.types import BufferedInputFile, Message, ReplyKeyboardRemove
 from .keyboards import enhance_kb, upscale_kb
 
 site = "http://fastapp:8000"
+timeout_value = int(os.getenv("API_TIMEOUT")) + 5
 
 
 class States(StatesGroup):
@@ -105,6 +106,7 @@ async def x2_upscale(message: Message, state: FSMContext, bot: Bot):
     Apply x2 upscaling
     """
     file = await bot.download(message.photo[-1])
+    await state.clear()
     await message.answer(text="Подождите, идёт обработка...")
     status = 400
     async with httpx.AsyncClient() as client:
@@ -115,7 +117,9 @@ async def x2_upscale(message: Message, state: FSMContext, bot: Bot):
             inference_id = response.json()["inference_id"]
             while True:
                 response = await client.get(
-                    f"{site}/enhance/result", params={"inference_id": inference_id}
+                    f"{site}/enhance/result",
+                    params={"inference_id": inference_id},
+                    timeout=timeout_value,
                 )
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
@@ -130,7 +134,6 @@ async def x2_upscale(message: Message, state: FSMContext, bot: Bot):
     else:
         logging.error("Processing image error", exc_info=True)
         await message.answer(text="Упс! Что-то пошло не так, попробуйте позже")
-        await state.clear()
 
 
 @router.message(States.upscale_x4, F.photo)
@@ -139,6 +142,7 @@ async def x4_upscale(message: Message, state: FSMContext, bot: Bot):
     Apply x4 upscaling
     """
     file = await bot.download(message.photo[-1])
+    await state.clear()
     await message.answer(text="Подождите, идёт обработка...")
     status = 400
     async with httpx.AsyncClient() as client:
@@ -149,7 +153,9 @@ async def x4_upscale(message: Message, state: FSMContext, bot: Bot):
             inference_id = response.json()["inference_id"]
             while True:
                 response = await client.get(
-                    f"{site}/enhance/result", params={"inference_id": inference_id}
+                    f"{site}/enhance/result",
+                    params={"inference_id": inference_id},
+                    timeout=timeout_value,
                 )
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
@@ -164,7 +170,6 @@ async def x4_upscale(message: Message, state: FSMContext, bot: Bot):
     else:
         logging.error("Processing image error", exc_info=True)
         await message.answer(text="Упс! Что-то пошло не так, попробуйте позже")
-        await state.clear()
 
 
 @router.message(States.deblur, F.photo)
@@ -173,6 +178,7 @@ async def deblur(message: Message, state: FSMContext, bot: Bot):
     Apply deblurring
     """
     file = await bot.download(message.photo[-1])
+    await state.clear()
     await message.answer(text="Подождите, идёт обработка...")
     status = 400
     async with httpx.AsyncClient() as client:
@@ -181,7 +187,9 @@ async def deblur(message: Message, state: FSMContext, bot: Bot):
             inference_id = response.json()["inference_id"]
             while True:
                 response = await client.get(
-                    f"{site}/enhance/result", params={"inference_id": inference_id}
+                    f"{site}/enhance/result",
+                    params={"inference_id": inference_id},
+                    timeout=timeout_value,
                 )
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
@@ -196,7 +204,6 @@ async def deblur(message: Message, state: FSMContext, bot: Bot):
     else:
         logging.error("Processing image error", exc_info=True)
         await message.answer(text="Упс! Что-то пошло не так, попробуйте позже")
-        await state.clear()
 
 
 @router.message(States.denoise, F.photo)
@@ -205,6 +212,7 @@ async def denoise(message: Message, state: FSMContext, bot: Bot):
     Apply denoising
     """
     file = await bot.download(message.photo[-1])
+    await state.clear()
     await message.answer(text="Подождите, идёт обработка...")
     status = 400
     async with httpx.AsyncClient() as client:
@@ -213,7 +221,9 @@ async def denoise(message: Message, state: FSMContext, bot: Bot):
             inference_id = response.json()["inference_id"]
             while True:
                 response = await client.get(
-                    f"{site}/enhance/result", params={"inference_id": inference_id}
+                    f"{site}/enhance/result",
+                    params={"inference_id": inference_id},
+                    timeout=timeout_value,
                 )
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
@@ -228,4 +238,3 @@ async def denoise(message: Message, state: FSMContext, bot: Bot):
     else:
         logging.error("Processing image error", exc_info=True)
         await message.answer(text="Упс! Что-то пошло не так, попробуйте позже")
-        await state.clear()

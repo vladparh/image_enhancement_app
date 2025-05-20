@@ -28,7 +28,7 @@ def upscale(img, scale_value):
         )
         if response.status_code == 200 or response.status_code == 500:
             break
-        sleep(int(os.getenv("POLLING_INTERVAL")))
+        sleep(int(os.getenv("POLLING_INTERVAL", "1")))
     return response.status_code, response.content
 
 
@@ -46,7 +46,7 @@ def deblur(img):
         )
         if response.status_code == 200 or response.status_code == 500:
             break
-        sleep(int(os.getenv("POLLING_INTERVAL")))
+        sleep(int(os.getenv("POLLING_INTERVAL", "1")))
     return response.status_code, response.content
 
 
@@ -64,8 +64,16 @@ def denoise(img):
         )
         if response.status_code == 200 or response.status_code == 500:
             break
-        sleep(int(os.getenv("POLLING_INTERVAL")))
+        sleep(int(os.getenv("POLLING_INTERVAL", "1")))
     return response.status_code, response.content
+
+
+if "disabled" not in st.session_state:
+    st.session_state.disabled = False
+
+
+def callback(value):
+    st.session_state.disabled = value
 
 
 st.title("Обработка изображений")
@@ -74,6 +82,7 @@ enhance_type = c.pills(
     "Выберите тип улучшения",
     options=["Повышение разрешения", "Удаление смазов", "Удаление шумов"],
     selection_mode="single",
+    disabled=st.session_state.disabled,
 )
 
 if enhance_type == "Повышение разрешения":
@@ -82,13 +91,22 @@ if enhance_type == "Повышение разрешения":
         options=["x2", "x4"],
         default="x2",
         selection_mode="single",
+        disabled=st.session_state.disabled,
     )
 
 input_img_bytes = c.file_uploader(
-    "Загрузите изображение", type=["jpg", "jpeg", "png"], accept_multiple_files=False
+    "Загрузите изображение",
+    type=["jpg", "jpeg", "png"],
+    accept_multiple_files=False,
+    disabled=st.session_state.disabled,
 )
 
-start_button = c.button("Обработать изображение")
+start_button = c.button(
+    "Обработать изображение",
+    disabled=st.session_state.disabled,
+    on_click=callback,
+    args=(True,),
+)
 
 if start_button and input_img_bytes is not None:
     with st.spinner("В процессе..."):
@@ -113,11 +131,15 @@ if start_button and input_img_bytes is not None:
             image_comparison(
                 img1=input_img, img2=output_img, label1="До", label2="После"
             )
+            st.button("Попробовать ещё", on_click=callback, args=(False,))
             st.download_button(
                 "Скачать обработанное изображение",
                 data=output_img_bytes,
                 mime="image/png",
+                on_click=callback,
+                args=(False,),
             )
         else:
             st.error("Упс! Что-то пошло не так")
+            st.button("Попробовать ещё", on_click=callback, args=(False,))
             logging.error("Image processing error", exc_info=True)

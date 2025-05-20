@@ -1,3 +1,4 @@
+import asyncio
 import io
 import logging
 import os
@@ -35,9 +36,14 @@ async def upscale(scale: int = 2, image: UploadFile = None):
     """
     Image upscaling
 
-    :param scale: scale for upscaling
-    :param image: image for upscaling
-    :return: upscaled image
+    Args:
+        scale: scale for upscaling
+        image: image for upscaling
+
+    Returns:
+        status code 200 and inference_id - if all is ok
+        status code 400 - if something wrong with file or invalid scale
+        status code 500 - if something wrong while sending task
     """
     try:
         content = image.file.read()
@@ -79,8 +85,13 @@ async def deblur(image: UploadFile = None):
     """
     Image deblurring
 
-    :param image: image for deblurring
-    :return: deblured image
+    Args:
+        image: image for debluring
+
+    Returns:
+        status code 200 and inference_id - if all is ok
+        status code 400 - if something wrong with file
+        status code 500 - if something wrong while sending task
     """
     try:
         content = image.file.read()
@@ -114,8 +125,13 @@ async def denoise(image: UploadFile = None):
     """
     Image denoising
 
-    :param image: image for denoising
-    :return: denoised image
+    Args:
+        image: image for denoising
+
+    Returns:
+        status code 200 and inference_id - if all is ok
+        status code 400 - if something wrong with file
+        status code 500 - if something wrong while sending task
     """
     try:
         img = Image.open(image.file)
@@ -137,24 +153,37 @@ async def denoise(image: UploadFile = None):
         )
     except Exception:
         logging.error("Image denoise error", exc_info=True)
-        raise HTTPException(status_code=500, detail="Something wrong send task")
+        raise HTTPException(status_code=500, detail="Something wrong while send task")
 
     return {"inference_id": inference_id}
 
 
 @router.get("/result")
 async def classification_result(inference_id) -> Response:
+    """
+    Get result
+
+    Args:
+        inference_id: id for get result
+
+    Returns:
+        status code 200 and image - if image processed
+        status code 502 - if inference_id not found yet
+        status code 500 - if error while processing image was occurred
+    """
+    for _ in range(int(os.getenv("API_TIMEOUT"))):
+        if redis_client.exists(inference_id):
+            result = redis_client.get(inference_id)
+            redis_client.delete(inference_id)
+            if result == b"error":
+                raise HTTPException(
+                    status_code=500, detail="Something wrong while image processing"
+                )
+            img = pickle.loads(result)
+            img_bytes = io.BytesIO()
+            img.save(img_bytes, format="png")
+            img_bytes = img_bytes.getvalue()
+            return Response(content=img_bytes, media_type="image/png")
+        await asyncio.sleep(1)
     if not redis_client.exists(inference_id):
         raise HTTPException(status_code=502, detail="inference_id not found")
-
-    result = redis_client.get(inference_id)
-    redis_client.delete(inference_id)
-    if result == b"error":
-        raise HTTPException(
-            status_code=500, detail="Something wrong while image processing"
-        )
-    img = pickle.loads(result)
-    img_bytes = io.BytesIO()
-    img.save(img_bytes, format="png")
-    img_bytes = img_bytes.getvalue()
-    return Response(content=img_bytes, media_type="image/png")
