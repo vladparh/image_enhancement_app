@@ -7,14 +7,13 @@ services:
       - "6379:6379"
   rabbit:
     image: rabbitmq:3.10-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=my_user
-      - RABBITMQ_DEFAULT_PASS=my_password
+    env_file: .env
     ports:
       - "5672:5672"
       - "15672:15672"
   worker:
     build: .
+    env_file: .env
     depends_on:
       - redis
       - rabbit
@@ -29,12 +28,14 @@ services:
                 - compute
   fastapp:
     build: src/services/fastapi_app
+    env_file: .env
     ports:
       - "8000:8000"
     depends_on:
       - worker
   stapp:
     build: src/services/streamlit_app
+    env_file: .env
     ports:
       - "8501:8501"
     depends_on:

@@ -2,3 +2,4 @@ weights/
 .idea
 __pycache__
 temp/
+.env

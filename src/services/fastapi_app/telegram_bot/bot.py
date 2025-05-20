@@ -1,11 +1,12 @@
+import os
+
 from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from .config_reader import settings
 from .handlers.predict_router import router as predict_router
 
-bot = Bot(token=settings.BOT_TOKEN.get_secret_value())
+bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
 dp = Dispatcher()
 dp.include_router(predict_router)
 

@@ -4,11 +4,10 @@ RUN mkdir /worker
 
 WORKDIR /worker
 
-COPY . .
+COPY requirements.txt ./
 
-RUN python -m pip install --no-cache-dir poetry==2.1.2 \
-    && poetry config virtualenvs.create false \
-    && poetry install --without dev --no-root \
-    && rm -rf $(poetry config cache-dir)/{cache,artifacts}
+RUN pip install -r requirements.txt
+
+COPY /src/models ./src/models/
 
 CMD ["python", "-m", "src.models.worker"]

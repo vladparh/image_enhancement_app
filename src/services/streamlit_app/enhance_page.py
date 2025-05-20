@@ -1,5 +1,6 @@
 import io
 import logging
+import os
 from time import sleep
 
 import requests
@@ -27,7 +28,7 @@ def upscale(img, scale_value):
         )
         if response.status_code == 200 or response.status_code == 500:
             break
-        sleep(1)
+        sleep(int(os.getenv("POLLING_INTERVAL")))
     return response.status_code, response.content
 
 
@@ -45,7 +46,7 @@ def deblur(img):
         )
         if response.status_code == 200 or response.status_code == 500:
             break
-        sleep(1)
+        sleep(int(os.getenv("POLLING_INTERVAL")))
     return response.status_code, response.content
 
 
@@ -63,7 +64,7 @@ def denoise(img):
         )
         if response.status_code == 200 or response.status_code == 500:
             break
-        sleep(1)
+        sleep(int(os.getenv("POLLING_INTERVAL")))
     return response.status_code, response.content
 
 

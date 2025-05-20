@@ -1,16 +1,33 @@
 import io
 import logging
+import os
 import pickle
 import uuid
 
+import pika
+import redis
 from fastapi import APIRouter, HTTPException, UploadFile
 from fastapi.responses import Response
-from pika import BasicProperties
+from pika import BasicProperties, PlainCredentials
 from PIL import Image
 
-from .bridge import rabbitmq_client, redis_client
-
 router = APIRouter(prefix="/enhance", tags=["enhance image"])
+
+# define rabbitmq and redis client
+connection = pika.BlockingConnection(
+    pika.ConnectionParameters(
+        heartbeat=0,
+        host="rabbit",
+        port=5672,
+        credentials=PlainCredentials(
+            os.getenv("RABBITMQ_DEFAULT_USER"), os.getenv("RABBITMQ_DEFAULT_PASS")
+        ),
+    )
+)
+rabbitmq_client = connection.channel()
+rabbitmq_client.queue_declare(queue="inference_queue")
+
+redis_client = redis.Redis(host="redis", port=6379)
 
 
 @router.post("/upscale")

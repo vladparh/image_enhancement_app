@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 
 import httpx
 from aiogram import Bot, F, Router
@@ -119,7 +120,7 @@ async def x2_upscale(message: Message, state: FSMContext, bot: Bot):
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
                     break
-                await asyncio.sleep(1)
+                await asyncio.sleep(int(os.getenv("POLLING_INTERVAL")))
     if status == 200:
         await message.answer(text="Готово!")
         await bot.send_photo(
@@ -153,7 +154,7 @@ async def x4_upscale(message: Message, state: FSMContext, bot: Bot):
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
                     break
-                await asyncio.sleep(1)
+                await asyncio.sleep(int(os.getenv("POLLING_INTERVAL")))
     if status == 200:
         await message.answer(text="Готово!")
         await bot.send_photo(
@@ -185,7 +186,7 @@ async def deblur(message: Message, state: FSMContext, bot: Bot):
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
                     break
-                await asyncio.sleep(1)
+                await asyncio.sleep(int(os.getenv("POLLING_INTERVAL")))
     if status == 200:
         await message.answer(text="Готово!")
         await bot.send_photo(
@@ -217,7 +218,7 @@ async def denoise(message: Message, state: FSMContext, bot: Bot):
                 if response.status_code == 200 or response.status_code == 500:
                     status = response.status_code
                     break
-                await asyncio.sleep(1)
+                await asyncio.sleep(int(os.getenv("POLLING_INTERVAL")))
     if status == 200:
         await message.answer(text="Готово!")
         await bot.send_photo(

@@ -8,10 +8,6 @@ from aiogram.types import Update
 from fastapi import FastAPI, Request
 from predict.router import router as predict_router
 from telegram_bot.bot import bot, dp
-from telegram_bot.config_reader import settings
-
-pythonpath = os.environ.get("PYTHONPATH", "").split(os.pathsep)
-print(pythonpath)
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -21,9 +17,10 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Код, выполняющийся при запуске приложения
-    webhook_url = settings.get_webhook_url()  # Получаем URL вебхука
+    base_site = os.getenv("WEBHOOK_BASE_SITE")
+    webhook_url = f"{base_site}/webhook"  # Получаем URL вебхука
     await bot.set_webhook(
-        url=settings.get_webhook_url(),
+        url=webhook_url,
         allowed_updates=dp.resolve_used_update_types(),
         drop_pending_updates=True,
     )
