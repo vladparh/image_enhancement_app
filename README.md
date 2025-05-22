@@ -22,6 +22,9 @@ DL-моделей. В нем можно повысить разрешение и
 │   │   ├───scunet
 │   │   │   └───model.py
 │   │   │
+│   │   ├───weights
+│   │   │   └───README.md
+│   │   │
 │   │   ├───image_enhance.py  # класс для улучшения изображений
 │   │   ├───model_configs.yaml  # конфиги моделей
 │   │   └───worker.py   # обработчик изображений
@@ -78,7 +81,7 @@ DL-моделей. В нем можно повысить разрешение и
    git clone https://github.com/vladparh/image_enhancement_app.git
    cd image_enhancement_app
    ```
-2. Добавить веса моделей в директорию `weights` в папке каждой модели
+2. Добавить веса моделей в директорию [weights](src/models/weights) и при необходимости поправить [model_configs.yaml](src/models/model_configs.yaml)
 3. Заменить `.env-example` на `.env` с необходимыми параметрами окружения
    окружения:
    - TELEGRAM_BOT_TOKEN: токен для telegram-бота
@@ -86,6 +89,7 @@ DL-моделей. В нем можно повысить разрешение и
    - RABBITMQ_DEFAULT_USER: пользователь для RabbitMQ
    - RABBITMQ_DEFAULT_PASS: пароль для RabbitMQ
    - POLLING_INTERVAL: пауза между опросами API-сервиса
+   - API_TIMEOUT: время, в течение которого соединение открыто (параметр для long polling)
 4. Выполнить команду:
    ```
    docker compose up
