@@ -16,15 +16,10 @@ async def cmd_start(message: Message):
     """
     Start message
     """
-    await message.answer("Привет! Чтобы узнать доступные команды, введи /help")
-
-
-@dp.message(Command("help"))
-async def help_info(message: Message):
-    """
-    Help
-    """
     await message.answer(
-        "/enhance или Улучшить- улучшение изображения \n"
+        "Привет! Данный бот позволяет улучшить качество изображения с помощью AI: "
+        "повысить разрешение изображения, убрать смазы или шумы на изображении. \n\n"
+        "Доступные команды: \n"
+        "/enhance или Улучшить - улучшение изображения \n"
         "/cancel или Отмена - выйти из процесса улучшения"
     )

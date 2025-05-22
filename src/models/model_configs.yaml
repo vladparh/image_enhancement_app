@@ -3,7 +3,7 @@ real_esrgan_x2:
   tile_size: 1000
   tile_pad: 100
   pre_pad: 10
-  weights_path: "real_esrgan/weights/RealESRGAN_x2plus.pth"
+  weights_path: "weights/RealESRGAN_x2plus.pth"
   params:
     {
       num_in_ch: 3,
@@ -19,7 +19,7 @@ real_esrgan_x4:
   tile_size: 500
   tile_pad: 50
   pre_pad: 10
-  weights_path: "real_esrgan/weights/RealESRGAN_x4plus.pth"
+  weights_path: "weights/RealESRGAN_x4plus.pth"
   params:
     {
       num_in_ch: 3,
@@ -35,7 +35,7 @@ mlwnet:
   tile_size: 800
   tile_pad: 200
   pre_pad: 10
-  weights_path: "mlwnet/weights/realblur_j-width32.pth"
+  weights_path: "weights/realblur_j-width32.pth"
   params: { dim: 32 }
 
 scunet:
@@ -43,5 +43,5 @@ scunet:
   tile_size: 1000
   tile_pad: 100
   pre_pad: 10
-  weights_path: "scunet/weights/scunet_color_real_gan.pth"
+  weights_path: "weights/scunet_color_real_gan.pth"
   params: { in_nc: 3, config: [4, 4, 4, 4, 4, 4, 4], dim: 64 }

@@ -49,6 +49,9 @@ class Enhancer:
         self.swin = False
 
     def load_model(self):
+        """
+        For load model. Modify to add a new model.
+        """
         base_path = os.path.dirname(os.path.abspath(__file__))
         config = Config("model_configs.yaml")
         logging.info(self.model_name)
